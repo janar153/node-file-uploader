@@ -35,6 +35,11 @@ app.use(express.urlencoded({ extended: false }));
 app.get('/', (req, res) => {
     let images = [];
     let path = __dirname + "/uploads";
+	
+	if (!fs.existsSync(path)){
+		fs.mkdirSync(path);
+	}
+
     let host = req.headers.host;
     fs.readdir(path, function(err, items){
         for (let i = 0; i < items.length; i++) {
