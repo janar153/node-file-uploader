@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Failid</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<h1>Faili üles laadimine</h1>
+
+<h3>{{status}}</h3>
+{{#if filename}}
+    <div class="block">
+        <img src="{{filename}}" alt="{{filename}}"/>
+        <p>{{filename}}</p>
+    </div>
+{{/if}}
+
+<form action="/upload" enctype="multipart/form-data" method="POST">
+    <input type="file" name="myFile" id="myFile" required />
+    <input type="submit" value="Upload" />
+</form>
+
+<hr>
+
+<h1>Failid</h1>
+{{#each files }}
+    <div class="block">
+        <img src="{{this}}" alt="{{this}}"/>
+        <p>{{this}}</p>
+    </div>
+{{/each}}
+
+</body>
+</html>

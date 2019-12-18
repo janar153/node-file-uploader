@@ -1,0 +1,21 @@
+.block {
+	float: left;
+	display: block;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 5px;
+	margin: 5px;
+	text-align: center;
+}
+.block img {
+	max-height: 200px;
+}
+.block p {
+	display: block;
+	font-size: 12px;
+}
+form {
+	clear: both;
+	display: block;
+	padding: 10px;
+}
