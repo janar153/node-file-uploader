@@ -11,7 +11,7 @@ Simple Node.js file uploader
 `$ sudo firewall-cmd --reload`
 
 ### add config for service
-`$ ln -s /opt/app/node-file-uploader/init.d/node-file-uploader /etc/rc.d/init.d/nod-file-uploader`
+`$ ln -s /opt/app/node-file-uploader/init.d/node-file-uploader /etc/rc.d/init.d/node-file-uploader`
 
 `$ sudo chmod +x /etc/rc.d/init.d/node-file-uploader`
 
