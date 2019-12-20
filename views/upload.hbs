@@ -1,0 +1,30 @@
+{{#if userContext}}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Upload</h1>
+    </div>
+    <div class="d-flex">
+        <div class="row">
+            {{#if message}}
+                <div class="col-12">
+                    <div class="alert alert-warning" role="alert">
+                        {{message}}
+                    </div>
+                </div>
+            {{/if}}
+
+            <div class="col-12">
+                <form action="/upload" enctype="multipart/form-data" method="POST" class="form-inline">
+                    <div class="form-group">
+                        <label for="inputFile">Select file</label>
+                        <input type="file" name="myFile" class="form-control-file" id="inputFile" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{{else}}
+    <div class="alert alert-warning" role="alert">
+        Please log in or register
+    </div>
+{{/if}}

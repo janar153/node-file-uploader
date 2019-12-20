@@ -3,6 +3,13 @@
 Simple Node.js file uploader
 
 ### installing app
+clone this git repo
+install npm dependencies 
+
+`$ npm install`
+
+make symlink to correct location
+
 `$ ln -s /home/user/node-file-uploader /opt/app/node-file-uploader`
 
 ### add firewall rules
@@ -25,3 +32,7 @@ Simple Node.js file uploader
 `$ sudo pkill -f nginx`
 
 `$ sudo systmctl start nginx`
+
+
+##### added okta based login
+Source: https://github.com/oktadeveloper/okta-node-express-15-minute-auth-example 

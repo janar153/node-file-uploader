@@ -1,79 +1,61 @@
+require('dotenv').config();
+
 const express = require('express');
-const bodyParser = require('body-parser');
-const multer = require('multer');
-const fs = require("fs");
-const config = require("./config");
-
-let storageOptions = multer.diskStorage({
-    destination: function (req, file, callback) {
-        callback(null, './uploads');
-    },
-    filename: function(req, file, callback) {
-        let originalName = file.originalname;
-        let extension = originalName.split(".");
-
-        callback(null, Date.now()+"."+extension[extension.length-1]);
-    }
-});
-
-const upload = multer({ storage: storageOptions });
-const hbs = require('hbs');
+const path= require("path");
 const logger = require('morgan');
 
-const port = process.env.PORT || config.port;
+const port = process.env.PORT || 3000;
 
 const app = module.exports = express();
 app.enable('trust proxy');
 app.set('port', port);
+
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
-app.use(express.static(__dirname + '/public'));
-app.set('views', __dirname + '/views');
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/static', express.static('public'));
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get('/', (req, res) => {
-    let images = [];
-    let path = __dirname + "/uploads";
-	
-	if (!fs.existsSync(path)){
-		fs.mkdirSync(path);
-	}
+app.use(require('express-session')({
+    secret: process.env.APP_SECRET,
+    resave: true,
+    saveUninitialized: false
+}));
 
-    let host = req.headers.host;
-    fs.readdir(path, function(err, items){
-        for (let i = 0; i < items.length; i++) {
-            let filenameWithLocation = "http://"+host+"/files/"+items[i];
-            images.push(filenameWithLocation);
-        }
-        res.render('index.hbs', { files: images });
-    });
+const { ExpressOIDC  } = require('@okta/oidc-middleware');
+const oidc = new ExpressOIDC({
+    issuer: `${process.env.OKTA_ORG_URL}/oauth2/default`,
+    client_id: process.env.OKTA_CLIENT_ID,
+    client_secret: process.env.OKTA_CLIENT_SECRET,
+    redirect_uri: `${process.env.HOST_URL}/authorization-code/callback`,
+    scope: 'openid profile'
 });
 
-app.post('/upload', upload.single('myFile'), (req, res) => {
-    let filename = '';
-    let uploadStatus = 'File upload failed!';
+app.use(oidc.router);
 
-    if (req.file) {
-        filename = req.file.filename;
-        uploadStatus = 'File upload success!';
+app.use('/register', require('./routes/register'));
+
+app.get('/logout', (req, res) => {
+    if(req.userContext) {
+        const idToken = req.userContext.tokens.id_token;
+        const to = encodeURI(process.env.HOST_URL);
+        const params = `id_token_hint=${idToken}&post_logout_redirect_uri=${to}`;
+        req.logout();
+        res.redirect(`${process.env.OKTA_ORG_URL}/oauth2/default/v1/logout?${params}`);
+    } else {
+        res.redirect('/');
     }
-
-    let images = [];
-    let path = __dirname + "/uploads";
-    let host = req.headers.host;
-    fs.readdir(path, function(err, items){
-        for (let i = 0; i < items.length; i++) {
-            let filenameWithLocation = "http://"+host+"/files/"+items[i];
-            images.push(filenameWithLocation);
-        }
-        res.render('index.hbs', { status: uploadStatus, filename: `http://${host}/files/${filename}`, files: images });
-    });
 });
 
-app.get('/files/:file', (req, res) => {
-    res.sendFile(__dirname + "/uploads/"+req.params.file);
-});
+app.use('/upload', require('./routes/upload'));
+app.use('/files', require('./routes/files'));
+
+app.use('/', require('./routes/index'));
+
 
 app.listen(port, () => {
     console.log(`App is live on port ${port}`);

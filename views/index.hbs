@@ -1,37 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Failid</title>
-    <link rel="stylesheet" href="/css/main.css">
-</head>
-<body>
-<h1>Faili üles laadimine</h1>
+{{#if userContext}}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Files</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <a href="/upload" class="btn btn-sm btn-outline-secondary">Upload</a>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center">
+        <div class="row">
+            {{#if message}}
+                <div class="col-12">
+                    <div class="alert alert-info" role="alert">
+                        {{message}}
+                    </div>
+                </div>
+            {{/if}}
 
-<h3>{{status}}</h3>
-{{#if filename}}
-    <div class="block">
-        <img src="{{filename}}" alt="{{filename}}"/>
-        <p>{{filename}}</p>
+            {{#each files }}
+                <div class="col-3 pb-2">
+                    <div class="card">
+                        <img src="{{this.src}}" class="card-img-top" alt="{{this.filename}}">
+                        <div class="card-body">
+                            <p class="card-text">{{this.src}}</p>
+                            <p class="card-text"><small class="text-muted">File added: {{this.last_updated}}</small></p>
+                            <a href="/files/delete/{{this.filename}}" class="btn btn-danger btn-sm">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+{{else}}
+    <div class="alert alert-warning" role="alert">
+        Please log in or register
     </div>
 {{/if}}
-
-<form action="/upload" enctype="multipart/form-data" method="POST">
-    <input type="file" name="myFile" id="myFile" required />
-    <input type="submit" value="Upload" />
-</form>
-
-<hr>
-
-<h1>Failid</h1>
-{{#each files }}
-    <div class="block">
-        <img src="{{this}}" alt="{{this}}"/>
-        <p>{{this}}</p>
-    </div>
-{{/each}}
-
-</body>
-</html>
