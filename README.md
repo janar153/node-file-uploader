@@ -27,7 +27,7 @@ make symlink to correct location
 `$ sudo chkconfig node-file-uploader on`
 
 ### NGINX configuration for CentOS 7
-`$ ln -s /opt/app/node-file-uploader/node-file-uploader.conf /etc/nginx/config.d/node-file-uploader.conf`
+`$ ln -s /opt/app/node-file-uploader/node-file-uploader.conf /etc/nginx/conf.d/node-file-uploader.conf`
 
 `$ sudo pkill -f nginx`
 
